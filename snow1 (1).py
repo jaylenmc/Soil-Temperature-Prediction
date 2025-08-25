@@ -25,8 +25,6 @@ st_value_list = ['ST_10', 'ST_50', 'ST_100']
 
 for st_value in st_value_list:
     train = snow_filtered.drop([other_st for other_st in st_value_list if other_st != st_value], axis=1)
-    # train = snow_filtered.drop(['ST_50', 'ST_100', 'Time(CST)'], axis=1)
-    #Y=snow_filtered['ST_10']
 
     # Correlation Matrix
     f, ax = plt.subplots(figsize=(10, 8))
@@ -84,7 +82,7 @@ for st_value in st_value_list:
     model_pred = model.predict(X_test.values)
     mse = sklearn.metrics.mean_squared_error(Y_test.values,model_pred)
     rmse = math.sqrt(mse)
-    print(f"RMSE Value: {rmse}")
+    print(f"Fuzzy Model RMSE Value: {rmse}\n")
 
     print(f"========== Random Forest ({st_value}) ==========")
     # Random Forest
@@ -112,7 +110,7 @@ for st_value in st_value_list:
     rf_pred = rf.predict(X_test)
     mse = sklearn.metrics.mean_squared_error(Y_test,rf_pred)
     rmse = math.sqrt(mse)
-    print(f"RMSE Value: {rmse}")
+    print(f"Random Forest RMSE Value: {rmse}\n")
 
     print(f"========== XgBoost ({st_value}) ==========")
     # XgBoost
@@ -128,7 +126,7 @@ for st_value in st_value_list:
     y_pred=xg.predict(X_test)
     mse = sklearn.metrics.mean_squared_error(Y_test,y_pred)
     rmse = math.sqrt(mse)
-    print(f"RMSE Value: {rmse}")
+    print(f"XgBoost RMSE Value: {rmse}\n")
 
     print(f"========== Linear Regression ({st_value}) ==========")
     # Linear Regression
@@ -137,4 +135,5 @@ for st_value in st_value_list:
     lr_pred = lr.predict(X_test)
     mse = sklearn.metrics.mean_squared_error(Y_test,lr_pred)
     rmse = math.sqrt(mse)
-    print(f"RMSE Value: {rmse}\n")
+    print(f"Linear Regression RMSE Value: {rmse}\n")
+    print('----------------------------------------------------------------\n')
