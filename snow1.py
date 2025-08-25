@@ -19,7 +19,6 @@ snow_csv = pd.read_csv('Grand Forks_daily updated (1).csv')
 snow_csv['Time(CST)'] = pd.to_datetime(snow_csv['Time(CST)'], format='%m/%d/%Y')
 snow_filtered = snow_csv[snow_csv['Time(CST)'].dt.month.isin([10,11,12, 1, 2, 3])]
 
-snow_filtered.isnull().count()
 snow_filtered=snow_filtered.fillna(0)
 st_value_list = ['ST_10', 'ST_50', 'ST_100']
 
@@ -59,17 +58,17 @@ for st_value in st_value_list:
     Y=train[st_value]
     X_train,X_test,Y_train,Y_test=train_test_split(X,Y,test_size=0.25,random_state=52)
 
-    print(f"========== Fuzzy Model ({st_value}) ==========")
     # Fuzyy Logic Model
+    print(f"========== Fuzzy Model ({st_value}) ==========")
     model = GdAnfisRegressor(
         num_rules=20, 
-        mf_class="Trapezoidal",
+        mf_class="Triangular",
         act_output=None, 
         vanishing_strategy="blend", 
         reg_lambda=None,
-        epochs=50, 
+        epochs=100, 
         batch_size=8, 
-        optim="Adafactor", 
+        optim="Adamax", 
         optim_params={"lr": 0.01},
         early_stopping=False, 
         n_patience=10, 
@@ -84,8 +83,8 @@ for st_value in st_value_list:
     rmse = math.sqrt(mse)
     print(f"Fuzzy Model RMSE Value: {rmse}\n")
 
-    print(f"========== Random Forest ({st_value}) ==========")
     # Random Forest
+    print(f"========== Random Forest ({st_value}) ==========")
     rf = RandomForestRegressor(
         n_estimators=100,
         criterion='squared_error',
@@ -112,24 +111,8 @@ for st_value in st_value_list:
     rmse = math.sqrt(mse)
     print(f"Random Forest RMSE Value: {rmse}\n")
 
-    print(f"========== XgBoost ({st_value}) ==========")
-    # XgBoost
-    xgboost_model = xgboost.XGBRegressor(
-        n_estimators=200, 
-        learning_rate=0.05, 
-        gamma=1, 
-        subsample=0.75,
-        colsample_bytree=0.7, 
-        max_depth=5
-        )
-    xg=xgboost_model.fit(X_train,Y_train)
-    y_pred=xg.predict(X_test)
-    mse = sklearn.metrics.mean_squared_error(Y_test,y_pred)
-    rmse = math.sqrt(mse)
-    print(f"XgBoost RMSE Value: {rmse}\n")
-
-    print(f"========== Linear Regression ({st_value}) ==========")
     # Linear Regression
+    print(f"========== Linear Regression ({st_value}) ==========")
     lr = LinearRegression(fit_intercept=True, copy_X=True, n_jobs=None, positive=False)
     lr.fit(X_train, Y_train)
     lr_pred = lr.predict(X_test)
